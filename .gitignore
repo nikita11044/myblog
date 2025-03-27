@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Deploy script for Mac OS ###
+deploy.sh
