@@ -3,6 +3,9 @@ package com.myblog;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,13 +15,14 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 @Configuration
 @EnableWebMvc
+@EnableJpaRepositories("com.myblog.jpa")
 @ComponentScan(basePackages = "com.myblog")
 public class WebConfiguration implements WebMvcConfigurer {
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setPrefix("classpath:/templates/"); // FIXED PATH
+        resolver.setPrefix("classpath:/templates/");
         resolver.setSuffix(".html");
         resolver.setTemplateMode("HTML");
         resolver.setCharacterEncoding("UTF-8");
@@ -43,6 +47,11 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/"); // FIXED PATH
+                .addResourceLocations("classpath:/static/");
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 }
