@@ -159,6 +159,13 @@
       <artifactId>postgresql</artifactId>
       <version>42.7.2</version>
     </dependency>
+
+    <!-- Minio -->
+    <dependency>
+      <groupId>io.minio</groupId>
+      <artifactId>minio</artifactId>
+      <version>8.5.7</version>
+    </dependency>
   </dependencies>
 
   <build>
