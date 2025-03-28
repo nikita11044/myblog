@@ -2,7 +2,7 @@ package com.myblog.service;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import io.minio.GetObjectArgs;
+import io.minio.RemoveObjectArgs;
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
 
@@ -26,13 +26,14 @@ public class MinioService {
         );
     }
 
-    public InputStream downloadFile(String fileName) throws Exception {
-        return minioClient.getObject(
-                GetObjectArgs.builder()
+    public void deleteFile(String fileName) throws Exception {
+        minioClient.removeObject(
+                RemoveObjectArgs.builder()
                         .bucket(bucketName)
                         .object(fileName)
                         .build()
         );
     }
+
 }
 
