@@ -21,10 +21,14 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final FileService fileService;
+    private final TagService tagService;
 
     @Transactional
     public Long create(AddPostDTO dto) {
         var entity = postMapper.toEntity(dto);
+
+        var tags = tagService.createMultipleFromString(dto.getTags());
+        entity.setTags(tags);
 
         if (dto.getImage() != null) {
             entity.setImagePath(fileService.uploadFile(dto.getImage()));
@@ -33,6 +37,7 @@ public class PostService {
         return postRepository.save(entity);
     }
 
+    @Transactional
     public PostDTO getById(long id) {
         var entity = postRepository.findById(id);
         return postMapper.toDTO(entity);

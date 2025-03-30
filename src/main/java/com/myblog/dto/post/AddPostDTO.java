@@ -11,5 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class AddPostDTO {
     private String title;
     private String text;
+    private String tags;
     private MultipartFile image;
 }
