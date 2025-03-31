@@ -5,6 +5,7 @@ import com.myblog.dto.post.PostDTO;
 import com.myblog.entity.Post;
 import com.myblog.mapper.PostMapper;
 import com.myblog.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +63,20 @@ public class PostService {
         postRepository.save(entity);
         postMapper.toDTO(entity);
     }
+
+    @Transactional
+    public void updateLikes(Long postId, boolean like) {
+        Post post = postRepository.findById(postId);
+
+        if (like) {
+            post.setLikesCount(post.getLikesCount() + 1);
+        } else if (post.getLikesCount() > 0) {
+            post.setLikesCount(post.getLikesCount() - 1);
+        }
+
+        postRepository.save(post);
+    }
+
 
     @Transactional
     public void delete(Long id) {
