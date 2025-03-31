@@ -1,7 +1,6 @@
 package com.myblog.controller;
 
-import com.myblog.dto.post.AddPostDTO;
-import com.myblog.dto.post.EditPostDTO;
+import com.myblog.dto.post.PlainPostDTO;
 import com.myblog.dto.post.PostDTO;
 import com.myblog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-public class PostsController {
+public class PostController {
     private final PostService postService;
 
     @GetMapping("/")
-    public String homePage(Model model) {
+    public String homePage() {
         return "redirect:/posts";
     }
 
@@ -48,7 +47,7 @@ public class PostsController {
     }
 
     @PostMapping("/posts")
-    public String addPost(AddPostDTO dto) {
+    public String addPost(PlainPostDTO dto) {
         var id = postService.create(dto);
         return "redirect:/posts/" + id;
     }
@@ -72,7 +71,7 @@ public class PostsController {
     }
 
     @PostMapping(value = "/posts/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String updatePost(@PathVariable("id") Long id, EditPostDTO dto) {
+    public String updatePost(@PathVariable("id") Long id, PlainPostDTO dto) {
         dto.setId(id);
         postService.update(dto);
         return "redirect:/posts/" + id;

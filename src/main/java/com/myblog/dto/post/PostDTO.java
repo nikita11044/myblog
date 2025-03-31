@@ -33,6 +33,8 @@ public class PostDTO {
 
     private Set<Tag> tags;
 
+    private String tagsAsString;
+
     private int likesCount;
 
     private Set<Comment> comments;

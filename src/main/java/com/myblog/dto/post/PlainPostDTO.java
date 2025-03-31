@@ -8,9 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddPostDTO {
+public class PlainPostDTO {
+    private Long id;
     private String title;
     private String text;
-    private String tags;
+    private String tagsAsString;
     private MultipartFile image;
 }

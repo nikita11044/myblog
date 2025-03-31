@@ -25,6 +25,12 @@
         </tr>
         <tr>
             <td>
+                <h3>Теги</h3>
+                <textarea rows="2" style="width: 100%;" name="tagsAsString" th:text="${post==null ? '' : post.getTagsAsString()}"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <h3>Текст</h3>
                 <textarea rows="30" style="width: 100%;" name="text" th:text="${post==null ? '' : post.getText()}"></textarea>
             </td>
@@ -32,12 +38,6 @@
         <tr>
             <td>
                 <button style="float:right;" th:text="${post==null ? 'Сохранить' : 'Редактировать'}"></button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3>Теги</h3>
-                <textarea rows="2" style="width: 100%;" name="tags" th:text="${post==null ? '' : post.getTagsAsText()}"></textarea>
             </td>
         </tr>
     </table>
