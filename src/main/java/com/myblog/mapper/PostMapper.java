@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper {
-    Post toEntity(PlainPostDTO plainPostDTO);
+    Post toEntity(PlainPostDTO dto);
 
     @Mapping(target = "tagsAsString", source = "tags", qualifiedByName = "mapTagsToString")
-    PostDTO toDTO(Post post);
+    PostDTO toDTO(Post entity);
 
     @Named("mapTagsToString")
     static String mapTagsToString(Set<Tag> tags) {

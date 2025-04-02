@@ -5,7 +5,6 @@ import com.myblog.dto.post.PostDTO;
 import com.myblog.entity.Post;
 import com.myblog.mapper.PostMapper;
 import com.myblog.repository.PostRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,22 +21,22 @@ public class PostService {
 
     @Transactional
     public Long create(PlainPostDTO dto) {
-        var entity = postMapper.toEntity(dto);
+        var post = postMapper.toEntity(dto);
 
         var tags = tagService.createMultipleFromString(dto.getTagsAsString());
-        entity.setTags(tags);
+        post.setTags(tags);
 
         if (dto.getImage() != null) {
-            entity.setImagePath(fileService.uploadFile(dto.getImage()));
+            post.setImagePath(fileService.uploadFile(dto.getImage()));
         }
 
-        return postRepository.save(entity);
+        return postRepository.save(post);
     }
 
     @Transactional
     public PostDTO getById(long id) {
-        var entity = postRepository.findById(id);
-        return postMapper.toDTO(entity);
+        var post = postRepository.findById(id);
+        return postMapper.toDTO(post);
     }
 
     public List<Post> getAll() {
@@ -46,27 +45,26 @@ public class PostService {
 
     @Transactional
     public void update(PlainPostDTO dto) {
-        var entity = postRepository.findById(dto.getId());
+        var post = postRepository.findById(dto.getId());
 
-        entity.setTitle(dto.getTitle());
-        entity.setText(dto.getText());
+        post.setTitle(dto.getTitle());
+        post.setText(dto.getText());
 
         if (dto.getTagsAsString() != null) {
-            entity.setTags(tagService.createMultipleFromString(dto.getTagsAsString()));
+            post.setTags(tagService.createMultipleFromString(dto.getTagsAsString()));
         }
 
         if (dto.getImage() != null) {
-            fileService.deleteFile(entity.getImagePath());
-            entity.setImagePath(fileService.uploadFile(dto.getImage()));
+            fileService.deleteFile(post.getImagePath());
+            post.setImagePath(fileService.uploadFile(dto.getImage()));
         }
 
-        postRepository.save(entity);
-        postMapper.toDTO(entity);
+        postRepository.save(post);
     }
 
     @Transactional
     public void updateLikes(Long postId, boolean like) {
-        Post post = postRepository.findById(postId);
+        var post = postRepository.findById(postId);
 
         if (like) {
             post.setLikesCount(post.getLikesCount() + 1);

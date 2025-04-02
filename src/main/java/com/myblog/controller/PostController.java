@@ -1,13 +1,16 @@
 package com.myblog.controller;
 
+import com.myblog.dto.comment.CommentDTO;
 import com.myblog.dto.post.PlainPostDTO;
 import com.myblog.dto.post.PostDTO;
+import com.myblog.service.CommentService;
 import com.myblog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final CommentService commentService;
 
     @GetMapping("/")
     public String homePage() {
@@ -46,8 +50,8 @@ public class PostController {
         return "add-post";
     }
 
-    @PostMapping("/posts")
-    public String addPost(PlainPostDTO dto) {
+    @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String addPost(@ModelAttribute PlainPostDTO dto) {
         var id = postService.create(dto);
         return "redirect:/posts/" + id;
     }
@@ -71,31 +75,33 @@ public class PostController {
     }
 
     @PostMapping(value = "/posts/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String updatePost(@PathVariable("id") Long id, PlainPostDTO dto) {
+    public String editPost(@PathVariable("id") Long id, @ModelAttribute PlainPostDTO dto) {
         dto.setId(id);
         postService.update(dto);
         return "redirect:/posts/" + id;
     }
 
-    @PostMapping("/posts/{id}/comments")
-    public String addComment(@PathVariable("id") Long postId,
-                             @RequestParam("text") String text) {
-        // postService.addComment(postId, text);
+    @PostMapping( "/posts/{id}/comments")
+    public String addComment(@PathVariable("id") Long postId, CommentDTO dto) {
+        dto.setPostId(postId);
+        commentService.create(dto);
         return "redirect:/posts/" + postId;
     }
 
     @PostMapping("/posts/{id}/comments/{commentId}")
     public String editComment(@PathVariable("id") Long postId,
                               @PathVariable("commentId") Long commentId,
-                              @RequestParam("text") String text) {
-        // postService.updateComment(postId, commentId, text);
+                              CommentDTO dto) {
+        dto.setId(commentId);
+        dto.setPostId(postId);
+        commentService.update(dto);
         return "redirect:/posts/" + postId;
     }
 
     @PostMapping("/posts/{id}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable("id") Long postId,
                                 @PathVariable("commentId") Long commentId) {
-        // postService.deleteComment(postId, commentId);
+        commentService.delete(commentId);
         return "redirect:/posts/" + postId;
     }
 
