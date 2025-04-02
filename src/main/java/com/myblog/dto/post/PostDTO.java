@@ -31,6 +31,8 @@ public class PostDTO {
 
     private String text;
 
+    private String textPreview;
+
     private Set<Tag> tags;
 
     private String tagsAsString;

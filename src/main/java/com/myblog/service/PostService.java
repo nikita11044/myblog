@@ -1,15 +1,21 @@
 package com.myblog.service;
 
-import com.myblog.dto.post.PlainPostDTO;
+import com.myblog.dto.post.PostRequestDTO;
 import com.myblog.dto.post.PostDTO;
 import com.myblog.entity.Post;
 import com.myblog.mapper.PostMapper;
 import com.myblog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +26,7 @@ public class PostService {
     private final TagService tagService;
 
     @Transactional
-    public Long create(PlainPostDTO dto) {
+    public Long create(PostRequestDTO dto) {
         var post = postMapper.toEntity(dto);
 
         var tags = tagService.createMultipleFromString(dto.getTagsAsString());
@@ -39,12 +45,26 @@ public class PostService {
         return postMapper.toDTO(post);
     }
 
-    public List<Post> getAll() {
-        return postRepository.findAll();
+    public Page<PostDTO> getByTagName(String search, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.by("createdAt").descending());
+
+        Page<Post> postPage;
+
+        if (search.isBlank()) {
+            postPage = postRepository.findAll(pageable);
+        } else {
+            postPage = postRepository.findByTagName(search, pageable);
+        }
+
+        List<PostDTO> postDTOs = postPage.getContent().stream()
+                .map(postMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(postDTOs, pageable, postPage.getTotalElements());
     }
 
     @Transactional
-    public void update(PlainPostDTO dto) {
+    public void update(PostRequestDTO dto) {
         var post = postRepository.findById(dto.getId());
 
         post.setTitle(dto.getTitle());

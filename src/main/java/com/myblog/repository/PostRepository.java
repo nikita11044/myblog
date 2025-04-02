@@ -4,6 +4,8 @@ import com.myblog.entity.Post;
 import com.myblog.jpa.PostJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,8 +21,12 @@ public class PostRepository {
         );
     }
 
-    public List<Post> findAll() {
-        return postJpaRepository.findAll();
+    public Page<Post> findByTagName(String tagName, Pageable pageable) {
+        return postJpaRepository.findByTagName(tagName, pageable);
+    }
+
+    public Page<Post> findAll(Pageable pageable) {
+        return postJpaRepository.findAll(pageable);
     }
 
     public Long save(Post post) {

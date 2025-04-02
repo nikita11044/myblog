@@ -1,11 +1,13 @@
 package com.myblog.controller;
 
 import com.myblog.dto.comment.CommentDTO;
-import com.myblog.dto.post.PlainPostDTO;
+import com.myblog.dto.post.PostRequestDTO;
 import com.myblog.dto.post.PostDTO;
+import com.myblog.entity.Post;
 import com.myblog.service.CommentService;
 import com.myblog.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,9 +31,21 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public String postsPage(Model model) {
-        var posts = postService.getAll();
-        model.addAttribute("posts", posts);
+    public String getPosts(@RequestParam(name = "search", defaultValue = "") String search,
+                           @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                           @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber,
+                           Model model) {
+        Page<PostDTO> postPage = postService.getByTagName(search, pageNumber, pageSize);
+
+        model.addAttribute("posts", postPage.getContent());
+        model.addAttribute("search", search);
+        model.addAttribute("paging", Map.of(
+                "pageNumber", pageNumber,
+                "pageSize", pageSize,
+                "hasNext", postPage.hasNext(),
+                "hasPrevious", postPage.hasPrevious()
+        ));
+
         return "posts";
     }
 
@@ -51,7 +67,7 @@ public class PostController {
     }
 
     @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String addPost(@ModelAttribute PlainPostDTO dto) {
+    public String addPost(@ModelAttribute PostRequestDTO dto) {
         var id = postService.create(dto);
         return "redirect:/posts/" + id;
     }
@@ -75,7 +91,7 @@ public class PostController {
     }
 
     @PostMapping(value = "/posts/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String editPost(@PathVariable("id") Long id, @ModelAttribute PlainPostDTO dto) {
+    public String editPost(@PathVariable("id") Long id, @ModelAttribute PostRequestDTO dto) {
         dto.setId(id);
         postService.update(dto);
         return "redirect:/posts/" + id;
