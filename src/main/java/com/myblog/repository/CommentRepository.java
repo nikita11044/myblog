@@ -21,7 +21,7 @@ public class CommentRepository {
         commentJpaRepository.save(comment);
     }
 
-    public void deleteById(Long id) {
-        commentJpaRepository.deleteById(id);
+    public void deleteByIdAndPostId(Long id, Long postId) {
+        commentJpaRepository.deleteByIdAndPostId(id, postId);
     }
 }

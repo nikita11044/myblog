@@ -1,4 +1,4 @@
-package utils;
+package configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,5 +23,10 @@ public class TestDataSourceConfiguration {
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public TestDatabaseHelper testDatabaseCleaner(JdbcTemplate jdbcTemplate) {
+        return new TestDatabaseHelper(jdbcTemplate);
     }
 }

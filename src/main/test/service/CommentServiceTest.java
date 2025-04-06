@@ -38,7 +38,7 @@ class CommentServiceTest {
 
     @BeforeEach
     void setUp() {
-        post = Post.builder().id(1L).title("Test Post").build();
+        post = Post.builder().id(1L).title("Test post").build();
         comment = Comment.builder().id(1L).post(post).text("This is a comment").build();
 
         commentDTO = CommentDTO.builder()
@@ -70,10 +70,10 @@ class CommentServiceTest {
 
     @Test
     void delete_ShouldRemoveComment() {
-        doNothing().when(commentRepository).deleteById(commentDTO.getId());
+        doNothing().when(commentRepository).deleteByIdAndPostId(commentDTO.getId(), post.getId());
 
-        commentService.delete(commentDTO.getId());
+        commentService.delete(commentDTO.getId(), post.getId());
 
-        verify(commentRepository, times(1)).deleteById(commentDTO.getId());
+        verify(commentRepository, times(1)).deleteByIdAndPostId(commentDTO.getId(), post.getId());
     }
 }

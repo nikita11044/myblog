@@ -1,5 +1,6 @@
 package controller;
 
+import configuration.TestDatabaseHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import utils.TestWebConfiguration;
+import configuration.TestWebConfiguration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -28,23 +29,16 @@ class PostControllerIntegrationTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private TestDatabaseHelper databaseHelper;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        jdbcTemplate.execute("DELETE FROM comment");
-        jdbcTemplate.execute("DELETE FROM post_tag");
-        jdbcTemplate.execute("DELETE FROM tag");
-        jdbcTemplate.execute("DELETE FROM post");
 
-        jdbcTemplate.execute("ALTER SEQUENCE post_id_seq RESTART WITH 1");
-        jdbcTemplate.execute("ALTER SEQUENCE comment_id_seq RESTART WITH 1");
-
-        jdbcTemplate.execute("INSERT INTO post (title, text, likes_count) VALUES ('Test title', 'Test text', 0)");
-        jdbcTemplate.execute("INSERT INTO comment (post_id, text) VALUES (1, 'Test comment text')");
+        databaseHelper.clearAndResetDatabase();
+        databaseHelper.createMockPostWithComment();
     }
 
     private MockMultipartFile getMockFile() {
