@@ -4,6 +4,7 @@ import com.myblog.entity.Post;
 import com.myblog.jpa.PostJpaRepository;
 import com.myblog.repository.PostRepository;
 import configuration.TestDatabaseHelper;
+import configuration.TestWebConfiguration;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
-import configuration.TestWebConfiguration;
 
 import java.util.Optional;
 

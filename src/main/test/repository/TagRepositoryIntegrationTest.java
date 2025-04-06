@@ -4,12 +4,12 @@ import com.myblog.entity.Tag;
 import com.myblog.jpa.TagJpaRepository;
 import com.myblog.repository.TagRepository;
 import configuration.TestDatabaseHelper;
+import configuration.TestWebConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
-import configuration.TestWebConfiguration;
 
 import java.util.Arrays;
 import java.util.HashSet;
